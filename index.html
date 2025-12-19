@@ -146,12 +146,20 @@ button{
 
 <script>
 /* 💖 Name Reveal */
-"Honey".split("").forEach((c,i)=>{
-    let s=document.createElement("span");
-    s.textContent=c;
-    s.style.animationDelay=i*.4+"s";
-    nameReveal.appendChild(s);
-});
+function nameRevealFunc(params) {
+    "Honey".split("").forEach((c, i) => {
+        let s = document.createElement("span");
+        s.textContent = c;
+        s.style.animationDelay = i * 0.4 + "s";
+        nameReveal.appendChild(s);
+    });
+}
+nameRevealFunc();
+
+setInterval(() => {
+    nameReveal.innerHTML = ""; // optional: clear previous text
+    nameRevealFunc();
+}, 3000);
 
 /* 💌 Text */
 const text=`On your special day, I just want you to know…
