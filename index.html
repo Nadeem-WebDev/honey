@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy Birthday My Love 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+body{
+    background:radial-gradient(circle at bottom,#1b2735,#090a0f);
+    overflow:hidden;
+    height:100vh;
+    color:white;
+}
+
+/* 🎆 Fireworks Canvas */
+#fireworks{
+    position:fixed;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+}
+
+/* 🌌 Stars */
+.star{
+    position:absolute;
+    width:2px;height:2px;
+    background:white;
+    border-radius:50%;
+    opacity:.8;
+}
+
+/* 💫 Fireflies */
+.firefly{
+    position:absolute;
+    width:6px;height:6px;
+    background:#fffacd;
+    border-radius:50%;
+    box-shadow:0 0 12px #fffacd;
+    animation:fly 6s infinite alternate;
+}
+@keyframes fly{to{transform:translate(120px,-160px);}}
+
+
+/* 💎 Layout */
+.container{
+    position:relative;
+    z-index:2;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:16px;
+}
+
+/* 💖 Card */
+.card{
+    width:100%;
+    max-width:420px;
+    padding:40px;
+    border-radius:24px;
+    background:rgba(0,0,0,.55);
+    backdrop-filter:blur(18px);
+    text-align:center;
+    animation:heartbeat 2s infinite;
+}
+
+@keyframes heartbeat{
+    25%{transform:scale(1.04);}
+    50%{transform:scale(1);}
+    75%{transform:scale(1.06);}
+}
+
+#nameReveal span{
+    font-family:"Permanent Marker",cursive;
+    font-size:2.4rem;
+    color:#ff6ec4;
+    display:inline-block;
+    opacity:0;
+    transform:translateY(30px);
+    animation:reveal .6s forwards;
+}
+@keyframes reveal{to{opacity:1;transform:none;}}
+
+#typed{line-height:1.7;}
+
+/* 📸 Slideshow */
+.slideshow{
+    margin-top:10px;
+    width:100%;
+    height:250px;
+    border-radius:16px;
+    overflow:hidden;
+    display:none;
+}
+.slideshow img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    animation:fade 4s infinite;
+}
+@keyframes fade{
+    0%,100%{opacity:0;}
+    25%,75%{opacity:1;}
+}
+
+/* 💕 Button */
+button{
+    margin-top:30px;
+    padding:14px 36px;
+    border-radius:40px;
+    border:none;
+    cursor:pointer;
+    font-size:1rem;
+    background:linear-gradient(135deg,#ff6ec4,#7873f5);
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<div class="container">
+    <div class="card">
+        <h3>Happy many many returns of the day 💖</h3>
+        <h1 id="nameReveal"></h1>
+        <p id="typed"></p>
+
+        <div class="slideshow" id="slideshow">
+            <img id="slide" src="images/honey1.jpeg">
+        </div>
+
+        <button onclick="startLove()">Play My Heart 💌</button>
+    </div>
+</div>
+
+<audio id="music" loop>
+    <source src="romantic.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* 💖 Name Reveal */
+"Honey".split("").forEach((c,i)=>{
+    let s=document.createElement("span");
+    s.textContent=c;
+    s.style.animationDelay=i*.4+"s";
+    nameReveal.appendChild(s);
+});
+
+/* 💌 Text */
+const text=`On your special day, I just want you to know…
+You are the most beautiful part of my life.
+Your smile lights up my darkest days,
+and your love makes my world complete.
+
+May this birthday bring you endless happiness,
+because you deserve nothing less than forever 💕`;
+let i=0;
+function typeText(){
+    if(i<text.length){
+        typed.innerHTML+=text[i++];
+        setTimeout(typeText,40);
+    }
+}
+
+/* 🌌 Stars */
+for(let i=0;i<120;i++){
+    let s=document.createElement("div");
+    s.className="star";
+    s.style.left=Math.random()*100+"vw";
+    s.style.top=Math.random()*100+"vh";
+    document.body.appendChild(s);
+}
+
+/* 💫 Fireflies */
+for(let i=0;i<10;i++){
+    let f=document.createElement("div");
+    f.className="firefly";
+    f.style.left=Math.random()*100+"vw";
+    f.style.top=Math.random()*100+"vh";
+    document.body.appendChild(f);
+}
+
+/* 🎆 Fireworks (TRANSPARENT) */
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let fireworks=[],particles=[];
+
+class Firework{
+    constructor(x,y,t){this.x=x;this.y=y;this.t=t;this.s=8;this.e=false;}
+    update(){
+        this.y-=this.s;
+        if(this.y<=this.t&&!this.e){this.e=true;explode(this.x,this.y);}
+    }
+    draw(){ctx.beginPath();ctx.arc(this.x,this.y,2,0,Math.PI*2);ctx.fillStyle="white";ctx.fill();}
+}
+
+class Particle{
+    constructor(x,y,c){
+        this.x=x;this.y=y;this.c=c;
+        this.r=Math.random()*3+1;
+        this.vx=(Math.random()-.5)*6;
+        this.vy=(Math.random()-.5)*6;
+        this.l=100;
+    }
+    update(){this.x+=this.vx;this.y+=this.vy;this.l--;}
+    draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=this.c;ctx.fill();}
+}
+
+function explode(x,y){
+    const c=["#ff6ec4","#ffd93d","#6bcfff","#b86bff","#00ffcc"];
+    for(let i=0;i<80;i++)particles.push(new Particle(x,y,c[Math.random()*c.length|0]));
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    fireworks.forEach((f,i)=>{f.update();f.draw();if(f.e)fireworks.splice(i,1);});
+    particles.forEach((p,i)=>{p.update();p.draw();if(p.l<=0)particles.splice(i,1);});
+    requestAnimationFrame(animate);
+}
+animate();
+
+function launchFireworks(){
+    for(let i=0;i<6;i++){
+        fireworks.push(new Firework(Math.random()*canvas.width,canvas.height,Math.random()*canvas.height/2));
+    }
+}
+
+/* 📸 Slideshow */
+const photos=["honey1.jpeg","honey2.jpeg","honey3.jpeg","honey4.jpeg","honey5.jpeg","honey6.jpeg","honey7.jpeg"];
+let index=0;
+function startSlideshow(){
+    const img=document.getElementById("slide");
+    document.getElementById("slideshow").style.display="block";
+    setInterval(()=>{
+        index=(index+1)%photos.length;
+        img.src='images/'+photos[index];
+        img.style.objectFit='cover';
+    },4000);
+}
+
+
+/* 💕 Start */
+function startLove(){
+    typed.innerHTML="";
+    i=0;
+    typeText();
+    music.play();
+    launchFireworks();
+    startSlideshow();
+    setInterval(launchFireworks,2500);
+}
+</script>
+
+</body>
+</html>
