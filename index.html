@@ -259,7 +259,6 @@ function startSlideshow(){
     setInterval(()=>{
         index=(index+1)%photos.length;
         img.src='images/'+photos[index];
-        img.style.objectFit='cover';
     },4000);
 }
 
